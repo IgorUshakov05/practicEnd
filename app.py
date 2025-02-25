@@ -13,22 +13,21 @@ from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 
-
-# Подключение к базе данных
-DATABASE_URI = 'postgresql://postgres:root@localhost:5432/asd'
-engine = create_engine(DATABASE_URI)
+# Подключение к MySQL
+DATABASE_URI = 'mysql+pymysql://root:Qwerty@localhost/mr'
+engine = create_engine(DATABASE_URI, echo=True)
 Base = declarative_base()
 
-# Модели для базы данных
+# Модели базы данных
 class TypeCompany(Base):
     __tablename__ = 'type_company'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(255), nullable=False)
 
 
 class Partners(Base):
     __tablename__ = 'partners'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     type_partner = Column(Integer, ForeignKey('type_company.id'))
     company_name = Column(String(255), nullable=False)
     ur_adress = Column(String(255), nullable=False)
@@ -39,16 +38,17 @@ class Partners(Base):
     rating = Column(Integer, nullable=True)
     type_company = relationship("TypeCompany")
 
+
 class ProductType(Base):
     __tablename__ = 'product_type'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(255), nullable=False)
     coefficient = Column(Float, nullable=False)
 
 
 class Product(Base):
     __tablename__ = 'product'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     type = Column(Integer, ForeignKey('product_type.id'))
     description = Column(String(255))
     article = Column(Integer)
@@ -58,26 +58,28 @@ class Product(Base):
 
     product_type = relationship("ProductType")
 
+
 class Material(Base):
     __tablename__ = 'material'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(255))
     defect = Column(Float)
 
+
 class MaterialProduct(Base):
     __tablename__ = 'material_product'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     id_product = Column(Integer, ForeignKey('product.id'))
     id_material = Column(Integer, ForeignKey('material.id'))
 
+
 class PartnerProduct(Base):
     __tablename__ = 'partner_product'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     id_product = Column(Integer, ForeignKey('product.id'))
     id_partner = Column(Integer, ForeignKey('partners.id'))
     quantity = Column(Integer)
-    date_of_sale = Column(String(50))  # Use a string for simplicity here
-
+    date_of_sale = Column(String(50))  # Используем строку для простоты
 
     product = relationship("Product")
     partner = relationship("Partners")
@@ -86,9 +88,10 @@ class PartnerProduct(Base):
 # Создание таблиц в базе данных
 Base.metadata.create_all(engine)
 
-
+# Создание сессии
 Session = sessionmaker(bind=engine)
 session = Session()
+
 
 
 # Функция для расчета скидки

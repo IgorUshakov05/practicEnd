@@ -1,6 +1,5 @@
 from fpdf import FPDF
 
-
 # В вашем методе __init__ добавьте кнопку для экспорта в PDF
 class MasterApp(QWidget):
     def __init__(self):
